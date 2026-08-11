@@ -715,6 +715,11 @@ class IssueViewSet(BaseViewSet):
 
     @allow_permission([ROLE.ADMIN], creator=True, model=Issue)
     def destroy(self, request, slug, project_id, pk=None):
+        return Response(
+            {"error": "Issue deletion is disabled"},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
         issue = Issue.objects.get(workspace__slug=slug, project_id=project_id, pk=pk)
 
         issue.delete()
@@ -773,6 +778,11 @@ class ProjectUserDisplayPropertyEndpoint(BaseAPIView):
 class BulkDeleteIssuesEndpoint(BaseAPIView):
     @allow_permission([ROLE.ADMIN])
     def delete(self, request, slug, project_id):
+        return Response(
+            {"error": "Issue deletion is disabled"},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
         issue_ids = request.data.get("issue_ids", [])
 
         if not len(issue_ids):
